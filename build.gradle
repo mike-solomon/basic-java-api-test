@@ -1,0 +1,48 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+// Is this needed?
+buildscript {
+  repositories {
+    // This is a place to find and share popular Apache Maven packages
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.bmuschko:gradle-docker-plugin:3.2.8'
+  }
+}
+
+apply plugin: "idea"
+apply plugin: "application"
+
+mainClassName = "com.mikesol.github.interview.Application"
+sourceCompatibility = 1.10
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  runtime "org.slf4j:slf4j-simple:1.7.25"
+}
+
+distZip {
+  // You only need to set this if you have specified an archive version. This removes the version number
+  // from the final distribution package which makes it easier to script in your Dockerfile.
+  archiveName = 'github-interview.zip'
+}
+
+// Docker stuff
+apply plugin: "com.bmuschko.docker-remote-api"
+
+task copyDockerfile(type: Copy) {
+  from 'Dockerfile'
+  into buildDir
+}
+
+task buildDockerImage(type: DockerBuildImage) {
+  inputDir = buildDir
+  tag = "${project.name}:${project.version}"
+}
+
+buildDockerImage.dependsOn copyDockerfile
+buildDockerImage.dependsOn distZip
