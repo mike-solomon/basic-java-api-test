@@ -1,8 +1,8 @@
 package com.mikesol.github.interview.app.user;
 
-import org.junit.*;
-
-import static junit.framework.TestCase.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserTest {
     private static int TEST_ID = 1;
@@ -11,7 +11,7 @@ public class UserTest {
 
     User testUser;
 
-    @Before
+    @BeforeEach
     public void setup() {
         testUser = new User(TEST_ID, TEST_NAME, TEST_AUTHOR);
     }

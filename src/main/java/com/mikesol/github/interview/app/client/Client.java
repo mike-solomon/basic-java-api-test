@@ -1,10 +1,22 @@
 package com.mikesol.github.interview.app.client;
 
-public class Client {
-    public Client() {}
+import org.apache.commons.lang3.StringUtils;
 
-    public void doRequest(String input) throws Exception {
-        System.out.println("Received a request with input: " + input);
+import java.util.logging.Logger;
+
+public class Client {
+    private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
+
+    public Client() {
+    }
+
+    public void doRequest(String input) {
+        LOGGER.info("Received a request with input:" + input);
+
+        if (StringUtils.isEmpty(input)) {
+            throw new IllegalArgumentException("doRequest method requires non-empty input");
+        }
+
 
     }
 }

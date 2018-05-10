@@ -1,9 +1,7 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
-// Is this needed?
 buildscript {
   repositories {
-    // This is a place to find and share popular Apache Maven packages
     jcenter()
   }
   dependencies {
@@ -25,9 +23,12 @@ repositories {
 dependencies {
   runtime "org.slf4j:slf4j-simple:1.7.25"
 
-  compile 'com.google.code.gson:gson:2.8.2'
+  compile "com.google.code.gson:gson:2.8.2"
+  compile 'org.apache.commons:commons-collections4:4.1'
+  compile 'org.apache.commons:commons-lang3:3.6'
 
-  testCompile 'junit:junit:4.12'
+  testCompile "org.junit.jupiter:junit-jupiter-api:5.0.1"
+  testCompile "org.hamcrest:hamcrest-library:1.3"
 }
 
 distZip {
@@ -36,7 +37,6 @@ distZip {
   archiveName = 'github-interview.zip'
 }
 
-// Docker stuff
 apply plugin: "com.bmuschko.docker-remote-api"
 
 task copyDockerfile(type: Copy) {
