@@ -7,7 +7,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,33 +24,23 @@ public class ClientTest {
     }
 
     @Test
-    public void createClient_invalidBaseUrl_throwsURISyntaxException() {
-        // Given an invalid base url
-        String invalidBaseUrl = "<>^{|}";
-
-        // When we create a client with said base url
-        // Then a URISyntaxException is thrown
-        thrown = assertThrows(URISyntaxException.class, () -> new Client(invalidBaseUrl));
-    }
-
-    @Test
-    public void doRequest_invalidInput_throwsIllegalArgumentException() throws Exception {
+    public void createGitHubIssue_invalidInput_throwsIllegalArgumentException() {
         // Given some invalid input
         String invalidInput = "";
 
         // Given a valid client
-        client = new Client("validUrl");
+        client = new Client("someBaseUrl", "someAccessToken");
 
-        // When doRequest is called with said input
+        // When createGitHubIssue is called with said input
         // Then an IllegalArgumentException is thrown
-        thrown = assertThrows(IllegalArgumentException.class, () -> client.doRequest(invalidInput));
+        thrown = assertThrows(IllegalArgumentException.class, () -> client.createGitHubIssue(invalidInput));
 
         // And a descriptive error message is returned
-        assertEquals("doRequest method requires non-empty input", thrown.getMessage());
+        assertEquals("createGitHubIssue method requires non-empty input", thrown.getMessage());
     }
 
     @Test
-    public void doRequest_validInput_postRequestMadeWithExpectedParams() throws Exception {
+    public void createGitHubIssue_validInput_postRequestMadeWithExpectedParams() throws Exception {
         // Given a valid server that returns a valid response
         MockWebServer server = new MockWebServer();
         server.enqueue(new MockResponse().setBody("someValidResponse"));
@@ -59,15 +48,34 @@ public class ClientTest {
 
         // Given a client that points to said server
         HttpUrl baseUrl = server.url("someValidPath");
-        client = new Client(baseUrl.toString());
+        client = new Client(baseUrl.toString(), "someAccessToken");
 
         // When the request is made with valid input
-        client.doRequest("someValidInput");
+        client.createGitHubIssue("someValidInput");
 
         // Then the server receives a POST request with the expected input and Content-Type
         RecordedRequest recordedRequest = server.takeRequest();
         assertEquals("POST", recordedRequest.getMethod());
         assertEquals("someValidInput", recordedRequest.getBody().readUtf8());
         assertEquals("application/json; charset=utf-8", recordedRequest.getHeader("Content-Type"));
+    }
+
+    @Test
+    public void getGitHubIssue_validInput_getRequestMadeWithExpectedParams() throws Exception {
+        // Given a valid server that returns a valid response
+        MockWebServer server = new MockWebServer();
+        server.enqueue(new MockResponse().setBody("someValidResponse"));
+        server.start();
+
+        // Given a client that points to said server
+        HttpUrl baseUrl = server.url("someValidPath");
+        client = new Client(baseUrl.toString(), "someAccessToken");
+
+        // When the request is made with valid input
+        client.getGitHubIssues();
+
+        // Then the server receives a POST request with the expected input and Content-Type
+        RecordedRequest recordedRequest = server.takeRequest();
+        assertEquals("GET", recordedRequest.getMethod());
     }
 }

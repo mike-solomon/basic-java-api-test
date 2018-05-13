@@ -12,20 +12,16 @@ import java.util.logging.Logger;
 public class Application {
     private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
     private static final String BASE_URL = "https://api.github.com";
-    private static final String CREATE_ISSUE_PATH = "/repos/mikesol314/github-interview/issues";
 
     public static void main(String... args) throws Exception {
         LOGGER.info("Starting GitHub interview service...");
 
-        Client client = new Client(buildClientUrl(BASE_URL, CREATE_ISSUE_PATH));
-        Response response = client.doRequest(createIssueRequestJson());
+        Client client = new Client(BASE_URL, getAuthToken());
+        Response createIssueResponse = client.createGitHubIssue(createIssueRequestJson());
+        LOGGER.info("Received a response of: " + createIssueResponse.body().string());
 
-        LOGGER.info("Received a response of: " + response.body().string());
-    }
-
-    private static String buildClientUrl(String baseUrl, String path) {
-        LOGGER.info(baseUrl + path + "?access_token=" + getAuthToken());
-        return baseUrl + path + "?access_token=" + getAuthToken();
+        Response getIssuesResponse = client.getGitHubIssues();
+        LOGGER.info("Received a response of: " + getIssuesResponse.body().string());
     }
 
     private static String getAuthToken() {
