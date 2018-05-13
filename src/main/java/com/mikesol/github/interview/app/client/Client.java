@@ -12,11 +12,11 @@ public class Client {
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    private HttpUrl baseUrl;
+    private HttpUrl fullUrl;
     private OkHttpClient client;
 
-    public Client(String baseUrl) throws URISyntaxException {
-        this.baseUrl = HttpUrl.get(new URI(baseUrl));
+    public Client(String fullUrl) throws URISyntaxException {
+        this.fullUrl = HttpUrl.get(new URI(fullUrl));
         client = new OkHttpClient();
     }
 
@@ -30,7 +30,7 @@ public class Client {
         RequestBody body = RequestBody.create(JSON, jsonInput);
 
         Request request = new Request.Builder()
-                .url(baseUrl)
+                .url(fullUrl)
                 .post(body)
                 .build();
 

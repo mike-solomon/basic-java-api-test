@@ -2,11 +2,11 @@ package com.mikesol.github.interview.issue;
 
 import com.google.gson.Gson;
 
-public class Issue {
+public class CreateIssueRequest {
     private String title;
     private String body;
 
-    public Issue(String title, String body) {
+    public CreateIssueRequest(String title, String body) {
         this.title = title;
         this.body = body;
     }
