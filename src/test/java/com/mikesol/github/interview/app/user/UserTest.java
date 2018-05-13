@@ -34,19 +34,19 @@ public class UserTest {
     @Test
     public void setId_validId_setsTheId() {
         testUser.setId(2);
-        assertEquals(2, testUser.id);
+        assertEquals(2, testUser.getId());
     }
 
     @Test
     public void setName_validName_setsTheName() {
         testUser.setName("other name");
-        assertEquals("other name", testUser.name);
+        assertEquals("other name", testUser.getName());
     }
 
     @Test
     public void setAuthor_validAuthor_setsTheAuthor() {
         testUser.setAuthor("other author");
-        assertEquals("other author", testUser.author);
+        assertEquals("other author", testUser.getAuthor());
     }
 
     @Test

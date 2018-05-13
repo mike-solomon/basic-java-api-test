@@ -3,9 +3,9 @@ package com.mikesol.github.interview.app.user;
 import com.google.gson.Gson;
 
 public class User {
-    int id;
-    String name;
-    String author;
+    private int id;
+    private String name;
+    private String author;
 
     public User(int id, String name, String author) {
         this.id = id;

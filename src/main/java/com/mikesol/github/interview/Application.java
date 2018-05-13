@@ -1,26 +1,43 @@
 package com.mikesol.github.interview;
 
 import com.mikesol.github.interview.app.client.Client;
-import com.mikesol.github.interview.app.user.User;
+import com.mikesol.github.interview.issue.Issue;
+import okhttp3.Response;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public class Application {
     private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
+    private static final String BASE_URL = "https://api.github.com/repos/mikesol314/github-interview/issues";
 
-    public static void main(String... args) {
+    public static void main(String... args) throws Exception {
         LOGGER.info("Starting GitHub interview service...");
 
-        User user = new User(1, "someName", "someAuthor");
-        String json = user.getJsonString();
+        Client client = new Client(BASE_URL + "?access_token=" + getAuthToken());
+        Response response = client.doRequest(createIssueJson());
 
+        LOGGER.info("Received a response of: " + response.body().string());
+    }
+
+    private static String createIssueJson() {
+        Issue issue = new Issue("someTitle", "someBody");
+        String json = issue.getJsonString();
         LOGGER.info("json string for user: " + json);
+        return json;
+    }
 
-        Client client = new Client();
+    private static String getAuthToken() {
+        String content = "";
+
         try {
-            client.doRequest(json);
-        } catch (Exception e) {
-            LOGGER.warning("Got an exception while making a request to the client: " + e);
+            content = new String(Files.readAllBytes(Paths.get(".personal-access-token")));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        return content;
     }
 }
