@@ -24,6 +24,20 @@ public class Client {
         client = new OkHttpClient();
     }
 
+    public void postToImaginaryEndpoint(String input) throws IOException, URISyntaxException {
+        LOGGER.info("Received a request with input:" + input);
+
+        HttpUrl url = HttpUrl.get(new URI(baseUrl + "/foo"));
+        RequestBody body = RequestBody.create(JSON_MEDIA_TYPE, input);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        client.newCall(request).execute();
+    }
+
     // TODO: Parse out the response into the expected struct
     public Response createGitHubIssue(String jsonInput) throws IOException, URISyntaxException {
         LOGGER.info("Received a request with input:" + jsonInput);

@@ -1,6 +1,7 @@
 package com.mikesol.github.interview.app.client;
 
 import okhttp3.HttpUrl;
+import okhttp3.Response;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -21,6 +22,28 @@ public class ClientTest {
     public void setup() {
         // Let's not see debug messages when running tests
         Logger.getLogger(Client.class.getName()).setLevel(Level.WARNING);
+    }
+
+    @Test
+    public void postToImaginaryEndpoint_validInput_postRequestMadeWithExpectedParams() throws Exception {
+        // Given a valid server that returns a valid response
+        MockWebServer server = new MockWebServer();
+        server.enqueue(new MockResponse().setBody("someValidResponse"));
+        server.start();
+
+        // Given a client that points to said server
+        HttpUrl baseUrl = server.url("somePath");
+        client = new Client(baseUrl.toString(), "someAccessToken");
+
+        // When the request is made with valid input
+        client.postToImaginaryEndpoint("someValidInput");
+
+        // Then the server receives a POST request with the expected input and Content-Type
+        RecordedRequest recordedRequest = server.takeRequest();
+        assertEquals("POST", recordedRequest.getMethod());
+        assertEquals("/somePath/foo", recordedRequest.getPath());
+        assertEquals("someValidInput", recordedRequest.getBody().readUtf8());
+        assertEquals("application/json; charset=utf-8", recordedRequest.getHeader("Content-Type"));
     }
 
     @Test
@@ -47,17 +70,21 @@ public class ClientTest {
         server.start();
 
         // Given a client that points to said server
-        HttpUrl baseUrl = server.url("someValidPath");
+        HttpUrl baseUrl = server.url("somePath");
         client = new Client(baseUrl.toString(), "someAccessToken");
 
         // When the request is made with valid input
-        client.createGitHubIssue("someValidInput");
+        Response response = client.createGitHubIssue("someValidInput");
 
         // Then the server receives a POST request with the expected input and Content-Type
         RecordedRequest recordedRequest = server.takeRequest();
         assertEquals("POST", recordedRequest.getMethod());
+        assertEquals("/somePath/repos/mikesol314/github-interview/issues?access_token=someAccessToken", recordedRequest.getPath());
         assertEquals("someValidInput", recordedRequest.getBody().readUtf8());
         assertEquals("application/json; charset=utf-8", recordedRequest.getHeader("Content-Type"));
+
+        // Then we get the expected response back
+        assertEquals("someValidResponse", response.body().string());
     }
 
     @Test
@@ -68,14 +95,18 @@ public class ClientTest {
         server.start();
 
         // Given a client that points to said server
-        HttpUrl baseUrl = server.url("someValidPath");
+        HttpUrl baseUrl = server.url("somePath");
         client = new Client(baseUrl.toString(), "someAccessToken");
 
         // When the request is made with valid input
-        client.getGitHubIssues();
+        Response response = client.getGitHubIssues();
 
-        // Then the server receives a POST request with the expected input and Content-Type
+        // Then the server receives a GET request
         RecordedRequest recordedRequest = server.takeRequest();
         assertEquals("GET", recordedRequest.getMethod());
+        assertEquals("/somePath/repos/mikesol314/github-interview/issues?access_token=someAccessToken", recordedRequest.getPath());
+
+        // Then we get the expected response back
+        assertEquals("someValidResponse", response.body().string());
     }
 }
