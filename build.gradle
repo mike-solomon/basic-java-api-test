@@ -54,10 +54,16 @@ task copyDockerfile(type: Copy) {
   into buildDir
 }
 
+task copyPersonalAccessToken(type: Copy) {
+  from '.personal-access-token'
+  into buildDir
+}
+
 task buildDockerImage(type: DockerBuildImage) {
   inputDir = buildDir
   tag = "${project.name}:${project.version}"
 }
 
 buildDockerImage.dependsOn copyDockerfile
+buildDockerImage.dependsOn copyPersonalAccessToken
 buildDockerImage.dependsOn distZip
