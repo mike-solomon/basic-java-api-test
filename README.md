@@ -1,6 +1,6 @@
 # Basic Java Api Test
 
-Set up a small development environment in your preferred programming language and test framework. Write a method that takes a string command and POSTs it to an imaginary API endpoint, http://localhost/foo.
+Set up a small development environment in your preferred programming language and test framework. Write a method that takes a string command and POSTs it to an imaginary API endpoint, http://localhost/foo. Also experimenting with just hitting the GitHub APIs and how that would work.
 
 # Running locally instructions
 - You can build the application via the command: `./gradlew build`
